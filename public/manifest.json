@@ -1,0 +1,19 @@
+{
+	"name": "Artisticly for Web",
+	"display": "standalone",
+	"start_url": "https://music.lumaa.fr",
+    "short_name": "Artisticly",
+    "description": "See new decentrialized song libraries and rediscover music the way you, and other people, always wanted.",
+	"scope": "/",
+	"id": "lumaa_artisticly",
+	"theme_color": "#dd5205",
+	"background_color": "#dd5205",
+    "orientation": "portrait",
+	"icons": [
+		{
+			"src": "/static/icon.jpg",
+			"type": "image/jpg",
+			"sizes": "1024x1024"
+		}
+	]
+}
