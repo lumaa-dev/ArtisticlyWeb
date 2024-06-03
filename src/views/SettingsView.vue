@@ -17,7 +17,9 @@
 				placeholder="Access Code"
 			/>
 			<button @click="checkServer" class="styled">
-				<p>{{ validated ? authenticated ? "Logged in" : "Updated" : "Update" }}</p>
+				<p>
+					{{ validated ? (authenticated ? "Logged in" : "Updated") : "Update" }}
+				</p>
 			</button>
 		</div>
 	</div>
@@ -38,7 +40,7 @@
 				serverUrl: "https://artisticly.lumaa.fr",
 				accessCode: "Artisticly",
 				authenticated: false,
-        validated: false,
+				validated: false,
 			};
 		},
 		methods: {
@@ -48,9 +50,9 @@
 					let info = await getArtisticlyServer();
 					let valid = info["artisticly"] == true;
 					if (valid) {
-            let codeValid = await isCorrectCode()
-            hasVerified(true);
-            this.validated = true;
+						let codeValid = await isCorrectCode();
+						hasVerified(true);
+						this.validated = true;
 						this.authenticated = codeValid;
 						setName(info["username"]);
 						console.log("Validated credentials");
