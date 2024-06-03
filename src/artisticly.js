@@ -35,7 +35,15 @@ async function isCorrectCode() {
 	});
 }
 
+/**
+ * 
+ * @param {string} serverUrl 
+ * @param {*} code 
+ */
 function setServer(serverUrl, code) {
+	if (serverUrl.endsWith("/")) {
+		serverUrl.slice(serverUrl.length - 1, serverUrl.length - 1);
+	}
 	api = serverUrl;
 	accessCode = code;
 }
