@@ -35,10 +35,14 @@
 <script>
 	import router from "@/router";
 	import {
+		getArtisticlyServer,
 		getName,
 		getSongFileUrl,
 		getSongs,
+		hasVerified,
 		isVerified,
+		setServer,
+		setName
 	} from "@/artisticly.js";
 	import SongRow from "@/components/SongRow.vue";
 	import NowPlaying from "@/components/NowPlaying.vue";
@@ -61,6 +65,14 @@
 			NowPlaying,
 		},
 		async beforeRouteEnter(to, from, next) {
+			let { url, code } = to.query;
+			if (url) {
+				setServer(url, code ?? "");
+				let info = await getArtisticlyServer();
+				let valid = info["artisticly"] == true;
+				hasVerified(valid);
+				setName(info["username"]);
+			}
 			const songs = await getSongs();
 			next((vm) => vm.setSongs(songs));
 		},
