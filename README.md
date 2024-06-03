@@ -14,6 +14,10 @@ If the URL isn't an Artisticly server, users will be redirected in the `/setting
 
 *<sup>1</sup> This is an upcoming feature.*
 
+## Library
+After loading the library, you will see all 20 first songs of your library, the private ones included if the access code is correct. Tap or click on a song to start/pause it *(1)*, this also works in the *Now Playing* ornament at the bottom of the screen *(2)*. If ***the*** perfect song is not in the 20 firsts, then scroll at the very bottom and tap **Load more** *(3)*, and 20 additional songs from your library will be added!\
+<img alt="Mobile Updated" src="./README_data/library.png" height="600"/>
+
 ## Vue.JS instructions
 ### Project setup
 ```bash
