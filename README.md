@@ -6,7 +6,8 @@ Discover anyone's [Artisticly library](https://github.com/lumaa-dev/ArtisticlySe
 ## How it works
 When you first arrive on the website, you will be directly redirect to `/settings` with a server URL and an access code. Once entered, press **Update**.
 
-If the entered server is an online [Artisticly server](https://github.com/lumaa-dev/ArtisticlyServer), the button should say **Updated**. Now you can tap/click back on the Artisticly logo in the top left, and the song library should appear!
+If the entered server is an online [Artisticly server](https://github.com/lumaa-dev/ArtisticlyServer), the button should say **Updated**. Now you can tap/click back on the Artisticly logo in the top left, and the song library should appear!\
+<img alt="Mobile Updated" src="./README_data/m_updated.jpeg" height="200"/>
 
 There is also an alternative way of doing so, that is quicker and used by the [*default Artisticly app*](https://apps.lumaa.fr/app/artisticly)<sup>1</sup>, that is to send the root URL with the query `url`, that would be like so: `https://example.com/?url=https://artisticly.example.com/`, and if needed, there is also a `code` query to provide anyone a default access code.\
 If the URL isn't an Artisticly server, users will be redirected in the `/settings` page.
