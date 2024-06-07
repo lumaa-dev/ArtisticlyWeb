@@ -11,8 +11,9 @@ app.use(express.json());
 
 app.get("/*", async (req, res) => {
 	let url = req.originalUrl;
+	console.log(url);
 	if (/\/music\/[0-9]+/gi.test(url)) await updateOpenGraph(req, res);
-	else if (/\/static\/.+/gi.test(url)) return res.sendFile(`${__dirname}/dist${url}`);
+	else if (/\/static\/.+/gi.test(url) || /\.((js)|(css)|(json)|(jpg)|(svg)|(png)|(jpeg)|(ico))$/gi.test(url)) return res.sendFile(`${__dirname}/dist${url}`);
     else res.sendFile(`${__dirname}/dist/index.html`);
 });
 
@@ -65,6 +66,7 @@ async function updateOpenGraph(req, res) {
 }
 
 /**
+ * Gets only the song ID from a link
  * @param {string} link The original full link from the request
  * @returns {number} The ID from the link
  */
