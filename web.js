@@ -11,10 +11,15 @@ app.use(express.json());
 
 app.get("/*", async (req, res) => {
 	let url = req.originalUrl;
-	
+
 	if (/\/music\/[0-9]+/gi.test(url)) await updateOpenGraph(req, res);
-	else if (/\/static\/.+/gi.test(url) || /\.((js)|(css)|(json)|(jpg)|(svg)|(png)|(jpeg)|(ico))$/gi.test(url)) return res.sendFile(`${__dirname}/dist${url}`);
-    else res.sendFile(`${__dirname}/dist/index.html`);
+	if (/\/cover\/[0-9]+/gi.test(url)) await giveCover(req, res);
+	else if (
+		/\/static\/.+/gi.test(url) ||
+		/\.((js)|(css)|(json)|(jpg)|(svg)|(png)|(jpeg)|(ico))$/gi.test(url)
+	)
+		return res.sendFile(`${__dirname}/dist${url}`);
+	else res.sendFile(`${__dirname}/dist/index.html`);
 });
 
 /**
@@ -25,44 +30,88 @@ app.get("/*", async (req, res) => {
 async function updateOpenGraph(req, res) {
 	let { url, code, utm_source: source } = req.query;
 	let id = getIdFromLink(req.originalUrl);
+	if ((url ?? "").length <= 0) return console.error("No server URL");
 
-    console.log(`new from: "${source}"`);
+	console.log(`new from: "${source ?? "unknown"}"`);
 
 	if (url.endsWith("/")) {
 		url.slice(url.length - 1, url.length - 1);
 	}
 
-	const data = await (await fetch(`${url}/musics?q=${id}&l=1`, {
-		headers: {
-			Authorization: code ?? "",
-		},
-	})).json()
+	/**@type {{id: number, metadata: {name: string, artist: string, album: string, artwork: string}}} */
+	const data = await (
+		await fetch(`${url}/musics?q=${id}&l=1`, {
+			headers: {
+				Authorization: code ?? "",
+			},
+		})
+	).json();
 
 	/**@type {{name: string, artist: string, album: string, artwork: string}} */
 	let metadata = data["metadata"];
 
 	const htmlFile = `${__dirname}/dist/index.html`;
-	let base = await fs.promises.readFile(htmlFile, 'utf-8');
+	let base = await fs.promises.readFile(htmlFile, "utf-8");
 
 	var htmlBase = $.load(base);
-    
-    htmlBase("meta[name=title]").attr('content', `${metadata.name} by ${metadata.artist} - Artisticly`);
-    htmlBase("meta[property=og:title]").attr('content', `${metadata.name} by ${metadata.artist} - Artisticly`);
-    htmlBase("meta[property=twitter:title]").attr('content', `${metadata.name} by ${metadata.artist} - Artisticly`);
 
-    htmlBase("meta[name=description]").attr("content", "")
-    htmlBase("meta[property=og:description]").attr("content", "")
-    htmlBase("meta[property=twitter:description]").attr("content", "")
+	htmlBase("meta[name=title]").attr(
+		"content",
+		`${metadata.name} by ${metadata.artist} - Artisticly`
+	);
+	htmlBase("meta[property=og:title]").attr(
+		"content",
+		`${metadata.name} by ${metadata.artist} - Artisticly`
+	);
+	htmlBase("meta[property=twitter:title]").attr(
+		"content",
+		`${metadata.name} by ${metadata.artist} - Artisticly`
+	);
 
-    if (metadata.artwork.length > 0) {
-        const b64 = `data:image/png;base64,${metadata.artwork}`;
-        htmlBase("meta[name=image]").attr("content", b64)
-        htmlBase("meta[property=og:image]").attr("content", b64)
-        htmlBase("meta[property=twitter:image]").attr("content", b64)
-        htmlBase("meta[property=twitter:card]").attr("content", "summary")
-    }
+	htmlBase("meta[name=description]").attr("content", "");
+	htmlBase("meta[property=og:description]").attr("content", "");
+	htmlBase("meta[property=twitter:description]").attr("content", "");
 
-    res.send(htmlBase.html());
+	if (metadata.artwork.length > 0) {
+		const img = `https://music.lumaa.fr/cover/${data.id}?url=${url}&code=${
+			code ?? ""
+		}`;
+		htmlBase("meta[name=image]").attr("content", img);
+		htmlBase("meta[property=og:image]").attr("content", img);
+		htmlBase("meta[property=twitter:image]").attr("content", img);
+		htmlBase("meta[property=twitter:card]").attr("content", "summary");
+	}
+
+	res.send(htmlBase.html());
+}
+
+/**
+ * Returns the album cover file
+ * @param {express.Request} req The request object
+ * @param {express.Response} res The response object
+ */
+async function giveCover(req, res) {
+	let { url, code } = req.query;
+	let id = getIdFromLink(req.originalUrl);
+	if ((url ?? "").length <= 0) return console.error("No server URL");
+
+	const data = await (
+		await fetch(`${url}/musics?q=${id}&l=1`, {
+			headers: {
+				Authorization: code ?? "",
+			},
+		})
+	).json();
+
+	/**@type {{name: string, artist: string, album: string, artwork: string}} */
+	let metadata = data["metadata"];
+	let img = Buffer.from(metadata.artwork, "base64");
+
+	res.writeHead(200, {
+		"Content-Type": "image/png",
+		"Content-Length": img.length,
+	});
+	res.end(img);
 }
 
 /**
@@ -78,5 +127,5 @@ function getIdFromLink(link) {
 }
 
 app.listen(port, () => {
-    console.log(`SERVER :${port}`);
-})
+	console.log(`SERVER :${port}`);
+});
