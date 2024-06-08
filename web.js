@@ -55,6 +55,9 @@ async function updateOpenGraph(req, res) {
 
 	var htmlBase = $.load(base);
 
+	htmlBase("meta[property=og:url]").attr("content", `https://music.lumaa.fr/music/${id}?url=${url}`);
+	htmlBase("meta[property=twitter:url]").attr("content", `https://music.lumaa.fr/music/${id}?url=${url}`);
+
 	htmlBase("meta[name=title]").attr(
 		"content",
 		`${metadata.name} by ${metadata.artist} - Artisticly`
@@ -68,9 +71,12 @@ async function updateOpenGraph(req, res) {
 		`${metadata.name} by ${metadata.artist} - Artisticly`
 	);
 
-	htmlBase("meta[name=description]").attr("content", "");
-	htmlBase("meta[property=og:description]").attr("content", "");
-	htmlBase("meta[property=twitter:description]").attr("content", "");
+	const dsc = `Listen to ${metadata.name} by ${metadata.artist} using Artisticly! Available for free, on all platforms.`;
+	htmlBase("meta[name=description]").attr("content", dsc);
+	htmlBase("meta[property=og:description]").attr("content", dsc);
+	htmlBase("meta[property=twitter:description]").attr("content", dsc);
+
+	htmlBase("meta[property=og:site_name]").attr("content", `Artisticly`);
 
 	if (metadata.artwork.length > 0) {
 		const img = `https://music.lumaa.fr/cover/${data.id}?url=${url}&code=${
