@@ -2,6 +2,8 @@
 node_modules
 /dist
 build.sh
+dev.sh
+*.zip
 
 # local env files
 .env.local

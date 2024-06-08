@@ -42,7 +42,7 @@
 		hasVerified,
 		isVerified,
 		setServer,
-		setName
+		setName,
 	} from "@/artisticly.js";
 	import SongRow from "@/components/SongRow.vue";
 	import NowPlaying from "@/components/NowPlaying.vue";
@@ -76,11 +76,11 @@
 			const songs = await getSongs();
 			next((vm) => vm.setSongs(songs));
 		},
-    beforeRouteLeave() {
-      if (this.audioPlayer) {
-        this.audioPlayer.pause()
-      }
-    },
+		beforeRouteLeave() {
+			if (this.audioPlayer) {
+				this.audioPlayer.pause();
+			}
+		},
 		beforeMount() {
 			let v = isVerified();
 			if (!v) {
