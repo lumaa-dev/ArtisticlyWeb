@@ -12,10 +12,22 @@ async function getArtisticlyServer() {
 async function getSongs(page = 1) {
 	if (!verified) return console.warn("Unverified server URL");
 
-	const limit = 20
+	const limit = 20;
 
 	return await fetch(`${api}/musics?l=${limit}&p=${page}`, {
-		headers: { "Authorization": accessCode },
+		headers: { Authorization: accessCode },
+	}).then(async (blob) => {
+		return await blob.json();
+	});
+}
+
+async function getSongData(id) {
+	if (!verified) return console.warn("Unverified server URL");
+
+	const limit = 1;
+
+	return await fetch(`${api}/musics?l=${limit}&q=${Number(id)}`, {
+		headers: { Authorization: accessCode },
 	}).then(async (blob) => {
 		return await blob.json();
 	});
@@ -29,16 +41,16 @@ function getSongFileUrl(id = 1) {
 
 async function isCorrectCode() {
 	return await fetch(`${api}/code`, {
-		headers: { "Authorization": accessCode },
+		headers: { Authorization: accessCode },
 	}).then(async (blob) => {
 		return (await blob.json())["correct"] == true;
 	});
 }
 
 /**
- * 
- * @param {string} serverUrl 
- * @param {*} code 
+ *
+ * @param {string} serverUrl
+ * @param {*} code
  */
 function setServer(serverUrl, code) {
 	if (serverUrl.endsWith("/")) {
@@ -70,6 +82,7 @@ module.exports = {
 	isCorrectCode,
 	hasVerified,
 	isVerified,
+	getSongData,
 	getSongs,
 	getSongFileUrl,
 	setName,
